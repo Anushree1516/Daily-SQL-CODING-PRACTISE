@@ -6,5 +6,13 @@ public class Main {
 ReverseArray.reverse();
 ReverseString.reverseString();
 ReverseNumber.reversenumber();
+System.out.println();
+FrequencyCount.countFreq();
+        System.out.println();
+        FirstNonRepeating.firstnonrepeat();
+        System.out.println();
+        DuplicateElements.duplicate();
+        System.out.println();
+        MostFrequentElement.mostFrequent();
     }
 }
