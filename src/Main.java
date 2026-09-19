@@ -14,5 +14,7 @@ FrequencyCount.countFreq();
         DuplicateElements.duplicate();
         System.out.println();
         MostFrequentElement.mostFrequent();
+        System.out.println();
+        MissingNumber.missingNumber();
     }
 }
