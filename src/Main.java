@@ -1,3 +1,6 @@
+import StackCodes.ReverseStringUsingStack;
+import StackCodes.StackArray;
+
 //TIP To <b>Run</b> code, press <shortcut actionId="Run"/> or
 // click the <icon src="AllIcons.Actions.Execute"/> icon in the gutter.
 public class Main {
@@ -16,5 +19,19 @@ FrequencyCount.countFreq();
         MostFrequentElement.mostFrequent();
         System.out.println();
         MissingNumber.missingNumber();
+
+        System.out.println("Stack Code");
+        StackArray stack=new StackArray(5);
+        stack.push(10);
+        stack.push(20);
+        stack.push(30);
+        stack.print();
+        System.out.println(stack.peek());
+        System.out.println(stack.pop());
+         stack.print();
+        System.out.println(stack.isEmpty());
+
+        ReverseStringUsingStack.reverseString();
+
     }
 }
