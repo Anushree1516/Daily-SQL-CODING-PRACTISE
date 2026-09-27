@@ -108,3 +108,71 @@ select emp_name,salary from employees where salary>(select avg(salary)from emplo
 | SNEHA    |  50000 |
 +----------+--------+
 ----------------------------------------------------------------------------------------------
+Question 3 —
+
+Find the employees who work in the IT department using a subquery.
+ select emp_name from employees where dept_id=(select dept_id from departments where dept_name='it');
++----------+
+| emp_name |
++----------+
+| ANU      |
+| RAVI     |
++----------+
+----------------------------------------------------------------------------------------------------
+Question 4 — 
+Find the employees who work in departments that have at least one employee earning more than ₹50,000.
+SELECT emp_name
+    -> FROM employees
+    -> WHERE dept_id IN (
+    ->     SELECT dept_id
+    ->     FROM employees
+    ->     WHERE salary > 50000
+    -> );
++----------+
+| emp_name |
++----------+
+| ANU      |
+| RAVI     |
+| KIRAN    |
+| SNEHA    |
++----------+
+--------------------------------------------------------------------------------------
+Question 5
+Find employees who work in the same department as KIRAN.
+
+ select emp_name from employees where dept_id in (select dept_id from employees where emp_name='kiran');
++----------+
+| emp_name |
++----------+
+| KIRAN    |
+| SNEHA    |
++----------+
+-------------------------------------------------------------------------------------------------------
+question 6 
+
+Find the employees who earn more than KIRAN's salary.
+
+ select emp_name
+from employees
+where salary>
+(select salary 
+from employees where emp_name='kiran');
+---------------------------------------------------------------------------------------------------------------------
+Question 7 —
+
+Find the employees who earn more than the average salary of their department.
+ SELECT e1.emp_name, e1.salary
+    -> FROM employees e1
+    -> WHERE e1.salary > (
+    ->     SELECT AVG(e2.salary)
+    ->     FROM employees e2
+    ->     WHERE e2.dept_id = e1.dept_id
+    -> );
++----------+--------+
+| emp_name | salary |
++----------+--------+
+| RAVI     |  55000 |
+| KIRAN    |  60000 |
++----------+--------+
+--------------------------------------------------------------------------------------------------
+
