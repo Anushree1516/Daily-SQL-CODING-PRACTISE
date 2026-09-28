@@ -1,0 +1,152 @@
+1)departments;
++---------+-----------+
+| dept_id | dept_name |
++---------+-----------+
+|       1 | IT        |
+|       2 | HR        |
+|       3 | FINANCE   |
+|       4 | MARKETING |
++---------+-----------+
+
+2)employees;
++--------+----------+--------+---------+
+| emp_id | emp_name | salary | dept_id |
++--------+----------+--------+---------+
+|    101 | ANU      |  45000 |       1 |
+|    102 | RAVI     |  55000 |       1 |
+|    103 | PRIYA    |  40000 |       2 |
+|    104 | KIRAN    |  60000 |       3 |
+|    105 | SNEHA    |  50000 |       3 |
+|    106 | SANJAY   |  45000 |       4 |
++--------+----------+--------+---------+
+------------------------------------------------------------------------------------------------------
+Question 1
+
+Find the employee(s) whose salary is less than KIRAN's salary.
+select emp_name from employees where salary<(select salary from employees where emp_name='kiran');
++----------+
+| emp_name |
++----------+
+| ANU      |
+| RAVI     |
+| PRIYA    |
+| SNEHA    |
+| SANJAY   |
++----------+
+-------------------------------------------------------------
+Question 2
+
+Find the employee(s) whose salary is equal to PRIYA's salary.
+select emp_name from employees where salary=(select salary from employees where emp_name='priya');
++----------+
+| emp_name |
++----------+
+| PRIYA    |
++----------+
+------------------------------------------------------------------------
+
+Question 3
+
+Find the employee(s) whose salary is greater than or equal to ANU's salary.
+select emp_name from employees where salary>=(select salary from employees where emp_name='anu');
++----------+
+| emp_name |
++----------+
+| ANU      |
+| RAVI     |
+| KIRAN    |
+| SNEHA    |
+| SANJAY   |
++----------+
+----------------------------------------------------------------------------
+
+Question 4
+
+Find the employee(s) whose salary is less than or equal to RAVI's salary.
+select emp_name from employees where salary<=(select salary from employees where emp_name='ravi');
++----------+
+| emp_name |
++----------+
+| ANU      |
+| RAVI     |
+| PRIYA    |
+| SNEHA    |
+| SANJAY   |
++----------+
+---------------------------------------------------------------------------------------
+
+Question 5
+
+Find the employee(s) whose salary is different from SNEHA's salary.
+select emp_name from employees where salary!=(select salary from employees where emp_name='sneha');
++----------+
+| emp_name |
++----------+
+| ANU      |
+| RAVI     |
+| PRIYA    |
+| KIRAN    |
+| SANJAY   |
++----------+
+----------------------------------------------------------------------------------
+Q6
+
+Find the employee(s) who have the minimum salary in the company.
+select emp_name from employees where salary=(select min(salary)from employees);
++----------+
+| emp_name |
++----------+
+| PRIYA    |
++----------+
+----------------------------------------------------------------------------------------
+
+Q7
+
+Find the employee(s) who have the maximum salary in the IT department.
+SELECT emp_name, salary
+    -> FROM employees
+    -> WHERE salary = (
+    ->     SELECT MAX(salary)
+    ->     FROM employees
+    ->     WHERE dept_id = (
+    ->         SELECT dept_id
+    ->         FROM departments
+    ->         WHERE dept_name = 'IT'
+    ->     )
+    -> );
++----------+--------+
+| emp_name | salary |
++----------+--------+
+| RAVI     |  55000 |
++----------+--------+
+-------------------------------------------------------------------------------------------------
+
+Q8
+
+Find the employee(s) whose salary is greater than the minimum salary in the Finance department.
+select emp_name,salary from employees where salary >(select min(salary)from employees where dept_id=(select dept_id from departments where dept_name='finance'));
++----------+--------+
+| emp_name | salary |
++----------+--------+
+| RAVI     |  55000 |
+| KIRAN    |  60000 |
++----------+--------+
+-----------------------------------------------------------------------------------
+
+Q9
+
+Find the employee(s) whose salary is less than the maximum salary in the HR department.
+select emp_name,salary from employees where salary <(select max(salary)from employees where dept_id=(select dept_id from departments where dept_name='HR'));
+----------------------------------------------------------------------------
+
+Q10
+
+Find the employee(s) whose salary is greater than the average salary of all employees.
+sql> select emp_name,salary from employees where salary >(select avg(salary)from employees);
++----------+--------+
+| emp_name | salary |
++----------+--------+
+| RAVI     |  55000 |
+| KIRAN    |  60000 |
+| SNEHA    |  50000 |
++----------+--------+
