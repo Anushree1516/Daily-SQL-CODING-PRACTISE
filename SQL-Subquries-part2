@@ -150,3 +150,114 @@ sql> select emp_name,salary from employees where salary >(select avg(salary)from
 | KIRAN    |  60000 |
 | SNEHA    |  50000 |
 +----------+--------+
+--------------------------------------------------------------------------------------------
+MULTIPLE ROWS SUBQUERIES/IN/ANY/ALL/NOT IN
+-------------------------------------------------------------------------------
+Q1. 
+Find the employees who work in the IT or Finance departments using a subquery.
+select emp_name from employees where dept_id in(select dept_id from departments where dept_name in('IT','FINANCE'));
++----------+
+| emp_name |
++----------+
+| ANU      |
+| RAVI     |
+| KIRAN    |
+| SNEHA    |
++----------+
+-----------------------------------------------------------------------------------------------------
+Q2. 
+Find the employees who do not work in the IT or Finance departments using a subquery.
+ select emp_name from employees where dept_id NOT in(select dept_id from departments where dept_name in('IT','FINANCE'));
++----------+
+| emp_name |
++----------+
+| PRIYA    |
+| SANJAY   |
++----------+
+-------------------------------------------------------------------------------------------------
+
+
+Q3
+Find the employees who belong to departments having an average salary greater than 45,000.
+ SELECT emp_name, salary
+    -> FROM employees
+    -> WHERE dept_id IN (
+    ->     SELECT dept_id
+    ->     FROM employees
+    ->     GROUP BY dept_id
+    ->     HAVING AVG(salary) > 45000
+    -> );
++----------+--------+
+| emp_name | salary |
++----------+--------+
+| ANU      |  45000 |
+| RAVI     |  55000 |
+| KIRAN    |  60000 |
+| SNEHA    |  50000 |
++----------+--------+
+--------------------------------------------------------------------
+Q1
+
+Find employees whose salary is greater than any salary of employees in the HR department.
+ select emp_name from employees where salary  > any (select salary from employees where dept_id=(select dept_id from departments where dept_name='hr'));
++----------+
+| emp_name |
++----------+
+| ANU      |
+| RAVI     |
+| KIRAN    |
+| SNEHA    |
+| SANJAY   |
++----------+
+--------------------------------------------------------------------------
+
+Q2
+
+Find employees whose salary is greater than all salaries of employees in the HR department.
+select emp_name,salary from employees where salary  > all (select salary from employees where dept_id=(select dept_id from departments where dept_name='hr'));
++----------+--------+
+| emp_name | salary |
++----------+--------+
+| ANU      |  45000 |
+| RAVI     |  55000 |
+| KIRAN    |  60000 |
+| SNEHA    |  50000 |
+| SANJAY   |  45000 |
++----------+--------+
+-----------------------------------------------------------------------------------------------
+
+
+
+Q3
+
+Find employees who do not belong to any department that has an employee earning more than ₹50,000.
+
+mysql> select emp_name from employees where dept_id not in (select dept_id from employees group by dept_id having salary>50000);
++----------+
+| emp_name |
++----------+
+| ANU      |
+| PRIYA    |
+| SNEHA    |
+| SANJAY   |
++----------+
+
+--------------------------------------------------------------------------------------
+Question 1
+
+Display the employee name, salary, and department name for employees who earn more than the average salary of all employees.
+ select e.emp_name ,e.salary, d.dept_name from employees e join departments d on e.dept_id=d.dept_id where (e.salary)>(select avg(salary)from employees  );
++----------+--------+-----------+
+| emp_name | salary | dept_name |
++----------+--------+-----------+
+| RAVI     |  55000 | IT        |
+| KIRAN    |  60000 | FINANCE   |
+| SNEHA    |  50000 | FINANCE   |
++----------+--------+-----------+
+--------------------------------------------------------------
+Now Q2
+
+Display the employee name, salary, and department name for the employee(s) who have the highest salary in the company.
+select e.emp_name ,e.salary ,d.dept_name from employees e join departments d on e.dept_id=d.dept_id where salary>(select max(salary) from employees);
+
+------------------------------------------------------------------------------------------------
