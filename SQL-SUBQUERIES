@@ -1,0 +1,178 @@
+Subquery — First understand the idea
+
+A subquery is simply a query inside another query.
+
+Think:
+
+SELECT ...
+FROM ...
+WHERE something = (SELECT ...);
+
+The inner query runs first, and its result is used by the outer query.
+
+There are 3 important types we should learn
+1️⃣ Single-row subquery
+-------------------------------
+Inner query returns one value.
+
+WHERE salary > (SELECT AVG(salary) FROM Employee)
+
+Common operators:
+
+=    >    <    >=    <=    <>
+2️⃣ Multiple-row subquery
+----------------------------------------
+Inner query returns multiple values.
+
+Then we commonly use:
+
+IN
+ANY
+ALL
+
+Example:
+
+SELECT name
+FROM Employee
+WHERE department_id IN (
+    SELECT id
+    FROM Department
+    WHERE location = 'Bangalore'
+);
+3️⃣ Correlated subquery 🔥
+------------------------------------
+The inner query depends on the outer query.
+
+Example:
+
+SELECT e1.name, e1.salary
+FROM Employee e1
+WHERE e1.salary > (
+    SELECT AVG(e2.salary)
+    FROM Employee e2
+    WHERE e2.department = e1.department
+);
+
+Meaning:
+
+Find employees whose salary is greater than the average salary of their own department.
+
+
+
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+1)departments;
++---------+-----------+
+| dept_id | dept_name |
++---------+-----------+
+|       1 | IT        |
+|       2 | HR        |
+|       3 | FINANCE   |
+|       4 | MARKETING |
++---------+-----------+
+
+
+2) from employees;
++--------+----------+--------+---------+
+| emp_id | emp_name | salary | dept_id |
++--------+----------+--------+---------+
+|    101 | ANU      |  45000 |       1 |
+|    102 | RAVI     |  55000 |       1 |
+|    103 | PRIYA    |  40000 |       2 |
+|    104 | KIRAN    |  60000 |       3 |
+|    105 | SNEHA    |  50000 |       3 |
+|    106 | SANJAY   |  45000 |       4 |
++--------+----------+--------+---------+
+
+
+----------------------------------------------------------------------------------------------------------
+Subquery Question 1
+
+Find the employee who has the highest salary.
+select emp_name,salary from employees where salary=(select max(salary)from employees);
++----------+--------+
+| emp_name | salary |
++----------+--------+
+| KIRAN    |  60000 |
++----------+--------+
+----------------------------------------------------------------------------------------------------
+Question 2 
+
+Find all employees whose salary is greater than the average salary of all employees.
+select emp_name,salary from employees where salary>(select avg(salary)from employees);
++----------+--------+
+| emp_name | salary |
++----------+--------+
+| RAVI     |  55000 |
+| KIRAN    |  60000 |
+| SNEHA    |  50000 |
++----------+--------+
+----------------------------------------------------------------------------------------------
+Question 3 —
+
+Find the employees who work in the IT department using a subquery.
+ select emp_name from employees where dept_id=(select dept_id from departments where dept_name='it');
++----------+
+| emp_name |
++----------+
+| ANU      |
+| RAVI     |
++----------+
+----------------------------------------------------------------------------------------------------
+Question 4 — 
+Find the employees who work in departments that have at least one employee earning more than ₹50,000.
+SELECT emp_name
+    -> FROM employees
+    -> WHERE dept_id IN (
+    ->     SELECT dept_id
+    ->     FROM employees
+    ->     WHERE salary > 50000
+    -> );
++----------+
+| emp_name |
++----------+
+| ANU      |
+| RAVI     |
+| KIRAN    |
+| SNEHA    |
++----------+
+--------------------------------------------------------------------------------------
+Question 5
+Find employees who work in the same department as KIRAN.
+
+ select emp_name from employees where dept_id in (select dept_id from employees where emp_name='kiran');
++----------+
+| emp_name |
++----------+
+| KIRAN    |
+| SNEHA    |
++----------+
+-------------------------------------------------------------------------------------------------------
+question 6 
+
+Find the employees who earn more than KIRAN's salary.
+
+ select emp_name
+from employees
+where salary>
+(select salary 
+from employees where emp_name='kiran');
+---------------------------------------------------------------------------------------------------------------------
+Question 7 —
+
+Find the employees who earn more than the average salary of their department.
+ SELECT e1.emp_name, e1.salary
+    -> FROM employees e1
+    -> WHERE e1.salary > (
+    ->     SELECT AVG(e2.salary)
+    ->     FROM employees e2
+    ->     WHERE e2.dept_id = e1.dept_id
+    -> );
++----------+--------+
+| emp_name | salary |
++----------+--------+
+| RAVI     |  55000 |
+| KIRAN    |  60000 |
++----------+--------+
+--------------------------------------------------------------------------------------------------
+

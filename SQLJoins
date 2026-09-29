@@ -1,0 +1,347 @@
+JOins
+
+Table1: employees;
++--------+----------+--------+---------+
+| emp_id | emp_name | salary | dept_id |
++--------+----------+--------+---------+
+|    101 | ANU      |  45000 |       1 |
+|    102 | RAVI     |  55000 |       1 |
+|    103 | PRIYA    |  40000 |       2 |
+|    104 | KIRAN    |  60000 |       3 |
+|    105 | SNEHA    |  50000 |       3 |
+|    106 | SANJAY   |  45000 |       4 |
++--------+----------+--------+---------+
+-------------------------------------------------------------------------------------------------
+Table 2:departments;
++---------+-----------+
+| dept_id | dept_name |
++---------+-----------+
+|       1 | IT        |
+|       2 | HR        |
+|       3 | FINANCE   |
+|       4 | MARKETING |
++---------+-----------+
+-----------------------------------------------------------------------------------
+1) Write an SQL query to display employee name and department name for every employee.
+ select e.emp_name,d.dept_name
+    -> from employees e join departments d
+    -> on e.dept_id=d.dept_id;
++----------+-----------+
+| emp_name | dept_name |
++----------+-----------+
+| ANU      | IT        |
+| RAVI     | IT        |
+| PRIYA    | HR        |
+| KIRAN    | FINANCE   |
+| SNEHA    | FINANCE   |
+| SANJAY   | MARKETING |
++----------+-----------+
+
+--------------------------------------------------------------------------------------------
+2)Display all employees, including employees whose department ID doesn't match any department.
+
+select e.emp_name,d.dept_name
+    -> from employees e left join departments d
+    -> on e.dept_id=d.dept_id;
++----------+-----------+
+| emp_name | dept_name |
++----------+-----------+
+| ANU      | IT        |
+| RAVI     | IT        |
+| PRIYA    | HR        |
+| KIRAN    | FINANCE   |
+| SNEHA    | FINANCE   |
+| SANJAY   | MARKETING |
++----------+-----------+
+
+------------------------------------------------------------------------------
+3)Display all departments and the employees belonging to each department, including departments that have no employees.
+select e.emp_name,d.dept_name
+    -> from employees e right join departments d
+    -> on e.dept_id=d.dept_id;
++----------+-----------+
+| emp_name | dept_name |
++----------+-----------+
+| ANU      | IT        |
+| RAVI     | IT        |
+| PRIYA    | HR        |
+| KIRAN    | FINANCE   |
+| SNEHA    | FINANCE   |
+| SANJAY   | MARKETING |
++----------+-----------+
+
+--------------------------------------------------------------------------------
+4)Display the department name and the total number of employees in each department
+select d.dept_name,count(e.emp_name) as total_employees
+    -> from employees e join departments d
+    -> on e.dept_id=d.dept_id
+    -> group by e.dept_id;
++-----------+-----------------+
+| dept_name | total_employees |
++-----------+-----------------+
+| IT        |               2 |
+| HR        |               1 |
+| FINANCE   |               2 |
+| MARKETING |               1 |
++-----------+-----------------+
+--------------------------------------------------------------------------------
+Question 5
+
+Find the department name and highest salary in each department.
+select d.dept_name,max(e.salary) as highest_salary
+    -> from employees e join departments d
+    -> on e.dept_id=d.dept_id
+    -> group by e.dept_id,d.dept_name;
++-----------+----------------+
+| dept_name | highest_salary |
++-----------+----------------+
+| IT        |          55000 |
+| HR        |          40000 |
+| FINANCE   |          60000 |
+| MARKETING |          45000 |
++-----------+----------------+
+--------------------------------------------------------------------------------------------------------------------
+Question 6
+Find the department name and average salary, but display only departments where the average salary is greater than 45,000.
+select d.dept_name,avg(e.Salary)
+    -> from employees e join departments d
+    -> on e.dept_id=d.dept_id
+    -> group by e.dept_id,d.dept_name
+    -> having avg(e.salary)>45000;
++-----------+---------------+
+| dept_name | avg(e.Salary) |
++-----------+---------------+
+| IT        |    50000.0000 |
+| FINANCE   |    55000.0000 |
++-----------+---------------+
+
+------------------------------------------------------------------
+ Question 7
+Find the employee name, department name, and salary of employees who earn more than 50,000.
+select e.emp_name,d.dept_name,e.salary
+    -> from employees e join departments d
+    -> on e.dept_id=d.dept_id
+    -> where salary>50000;
++----------+-----------+--------+
+| emp_name | dept_name | salary |
++----------+-----------+--------+
+| RAVI     | IT        |  55000 |
+| KIRAN    | FINANCE   |  60000 |
+------------------------------------------------------------------------------------
+ Question 8
+
+Find the department name that has the maximum number of employees.
+
+select d.dept_name,count(e.emp_name) as total_employees
+    -> from employees e join departments d
+    -> on e.dept_id=d.dept_id
+    -> group by e.dept_id,d.dept_name
+    -> order by total_employees desc
+    -> limit 1;
++-----------+-----------------+
+| dept_name | total_employees |
++-----------+-----------------+
+| IT        |               2 |
++-----------+-----------------+
+
+------------------------------------------------------------------------
+Question 9
+
+Find the employee(s) who earn the highest salary in their respective department.
+ SELECT e.emp_name, d.dept_name, e.salary
+    -> FROM employees e
+    -> JOIN departments d
+    -> ON e.dept_id = d.dept_id
+    -> WHERE e.salary = (
+    ->     SELECT MAX(e2.salary)
+    ->     FROM employees e2
+    ->     WHERE e2.dept_id = e.dept_id
+    -> );
++----------+-----------+--------+
+| emp_name | dept_name | salary |
++----------+-----------+--------+
+| RAVI     | IT        |  55000 |
+| PRIYA    | HR        |  40000 |
+| KIRAN    | FINANCE   |  60000 |
+| SANJAY   | MARKETING |  45000 |
++----------+-----------+--------+
+
+----------------------------------------------------------------------
+Question 10
+
+Find the department name and total salary, including departments with no employees.
+select d.dept_name,sum(e.salary) as total_salary
+    -> from departments d left join employees e
+    -> on e.dept_id=d.dept_id
+    -> group by e.dept_id,d.dept_name;
++-----------+--------------+
+| dept_name | total_salary |
++-----------+--------------+
+| IT        |       100000 |
+| HR        |        40000 |
+| FINANCE   |       110000 |
+| MARKETING |        45000 |
++-----------+--------------+
+----------------------------------------------------------------------------------------------------
+Question 11
+
+Find the employee name and department name for all employees, including those who don't belong to any department.
+select e.emp_name,d.dept_name
+    -> from employees e left join departments d
+    -> on e.dept_id=d.dept_id;
++----------+-----------+
+| emp_name | dept_name |
++----------+-----------+
+| ANU      | IT        |
+| RAVI     | IT        |
+| PRIYA    | HR        |
+| KIRAN    | FINANCE   |
+| SNEHA    | FINANCE   |
+| SANJAY   | MARKETING |
++----------+-----------+
+------------------------------------------------------------------------------------------
+Question 12
+
+Find the department name and number of employees earning more than 45,000 in each department.
+from employees e join departments d
+    -> on e.dept_id=d.dept_id
+    -> where e.salary>45000
+    -> group by d.dept_name,e.dept_id;
++-----------+------------------+
+| dept_name | number_employess |
++-----------+------------------+
+| IT        |                1 |
+| FINANCE   |                2 |
++-----------+------------------+
+---------------------------------------------------------------------------
+🎯 Question 13 
+Display the department name and employee name for employees whose salary is between 40,000 and 55,000.
+
+select d.dept_name,e.emp_name
+    -> from employees e join departments d
+    -> on e.dept_id=d.dept_id
+    -> where e.salary between 40000 and 50000;
++-----------+----------+
+| dept_name | emp_name |
++-----------+----------+
+| IT        | ANU      |
+| HR        | PRIYA    |
+| FINANCE   | SNEHA    |
+| MARKETING | SANJAY   
+------------------------------------------------------------------------------
+
+🎯 Question 14
+Find the total salary paid to employees in each department, but include only departments where the total salary exceeds 80,000.
+ select sum(e.salary) as total_salary,d.dept_name
+    -> from employees e join departments d
+    -> on e.dept_id=d.dept_id
+    -> group by e.dept_id,d.dept_name
+    -> having total_salary>80000;
++--------------+-----------+
+| total_salary | dept_name |
++--------------+-----------+
+|       100000 | IT        |
+|       110000 | FINANCE   |
++--------------+-----------+
+--------------------------------------------------------------------------------------------------
+🎯 Question 15
+Find the department name and the highest salary among employees whose names start with the letter S.
+ select d.dept_name,max(e.salary) as highest_salary
+    -> from employees e join departments d
+    -> on e.dept_id=d.dept_id
+    -> where e.emp_name like 's%'
+    -> group by d.dept_name;
++-----------+----------------+
+| dept_name | highest_salary |
++-----------+----------------+
+| FINANCE   |          50000 |
+| MARKETING |          45000 |
++-----------+----------------+
+
+--------------------------------------------------------------------------------------------------
+Question 16 — Different Type
+
+Find the department name and total number of employees, sorted by department name in alphabetical order.
+select d.dept_name,count(e.emp_name)as total_employees
+    -> from employees e join departments d
+    -> on e.dept_id=d.dept_id
+    -> group by d.dept_name
+    -> order by d.dept_name asc;
++-----------+-----------------+
+| dept_name | total_employees |
++-----------+-----------------+
+| FINANCE   |               2 |
+| HR        |               1 |
+| IT        |               2 |
+| MARKETING |               1 |
++-----------+-----------------+
+
+------------------------------------------------------------------------------
+Question 17 — Different Type
+
+Find the department name and the difference between the maximum and minimum salary in each department.
+select d.dept_name,max(e.salary)-min(e.salary)as difference
+    -> from employees e join departments d
+    -> on e.dept_id=d.dept_id
+    -> group by d.dept_name;
++-----------+------------+
+| dept_name | difference |
++-----------+------------+
+| IT        |      10000 |
+| HR        |          0 |
+| FINANCE   |      10000 |
+| MARKETING |          0 |
++-----------+------------+
+-------------------------------------------------------------------------------
+Question 18 — Different Type
+
+Find the department name and total salary, but display only departments where the number of employees is exactly 2.
+select d.dept_name,sum(e.salary)
+    -> from employees e join departments d
+    -> on e.dept_id=d.dept_id
+    -> group by d.dept_name
+    -> having count(e.emp_name)=2;
++-----------+---------------+
+| dept_name | sum(e.salary) |
++-----------+---------------+
+| IT        |        100000 |
+| FINANCE   |        110000 |
++-----------+---------------+
+-----------------------------------------------------------------------------
+Question 19 — Different Type
+
+Find the department name and total salary of employees whose names contain the letter A, grouped by department.
+ SELECT d.dept_name, SUM(e.salary) AS total_salary
+    -> FROM employees e
+    -> JOIN departments d
+    -> ON e.dept_id = d.dept_id
+    -> WHERE e.emp_name LIKE '%A%'
+    -> GROUP BY d.dept_name;
++-----------+--------------+
+| dept_name | total_salary |
++-----------+--------------+
+| IT        |       100000 |
+| HR        |        40000 |
+| FINANCE   |       110000 |
+| MARKETING |        45000 |
++-----------+--------------+
+4 rows in set (0.00 sec)
+
+
+--------------------------------------------------------------------------------------------
+Question 20 — JOIN Interview
+
+Find the department name and average salary of employees whose salary is at least 40,000, including only departments that have matching employees.
+ SELECT d.dept_name, AVG(e.salary) AS average_salary
+    -> FROM employees e
+    -> JOIN departments d
+    -> ON e.dept_id = d.dept_id
+    -> WHERE e.salary >= 40000
+    -> GROUP BY d.dept_name;
++-----------+----------------+
+| dept_name | average_salary |
++-----------+----------------+
+| IT        |     50000.0000 |
+| HR        |     40000.0000 |
+| FINANCE   |     55000.0000 |
+| MARKETING |     45000.0000 |
