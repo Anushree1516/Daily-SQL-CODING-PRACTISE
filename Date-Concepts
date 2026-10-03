@@ -1,0 +1,264 @@
+
+SQL DATE — Theory
+------------------------------------------------------------
+A DATE in SQL is used to store a calendar date:
+
+YEAR - MONTH - DAY
+2026 - 10    - 03
+------------------------------------------------------------------
+
+
+1. Why do we need DATE?
+
+In real applications, we need to store things like:
+
+Employee joining date
+Customer registration date
+Order date
+Product manufacturing date
+Birth date
+Payment date
+Application date
+Delivery date
+
+For your table:
+
+emp_id | emp_name | joining_date
+101    | ANU      | 2023-06-12
+102    | RAVI     | 2024-01-10
+
+joining_date tells us when the employee joined.
+-------------------------------------------------------------------------
+2)
+
+
+TIME
+
+Stores only time.
+---------------------------------------------
+14:30:25
+DATETIME
+
+Stores date + time.
+
+2023-06-12 14:30:25
+
+Useful when you need to know exactly when something happened.
+
+Example:
+
+Customer placed an order on June 12, 2023 at 2:30 PM.
+----------------------------------------------------------------------------------
+TIMESTAMP
+
+Also stores date + time:
+
+2023-06-12 14:30:25
+
+TIMESTAMP has some MySQL-specific behavior around time zones and automatic timestamp handling, so we'll learn that separately.
+-------------------------------------------------------------------------------------------
+3. DATE vs DATETIME
+
+This is important for interviews.
+
+Suppose:
+
+Employee joining
+
+You only care about the day:
+
+2023-06-12
+
+Use:
+
+DATE
+
+But suppose:
+
+Online order
+
+You need:
+
+2023-06-12 14:35:20
+
+because you want the exact time the order was placed.
+
+Use:
+
+DATETIME
+
+So remember:
+
+DATE      → Date only
+TIME      → Time only
+DATETIME  → Date + Time
+TIMESTAMP → Date + Time with timestamp/time-zone-related behavior
+---------------------------------------------------------------------------------------------
+4. How SQL stores a DATE
+
+When we write:
+
+'2023-06-12'
+
+the format is:
+
+YYYY-MM-DD
+  ↓    ↓  ↓
+ Year Month Day
+
+So:
+
+2023 → Year
+06   → Month
+12   → Day
+Important
+
+Don't normally write:
+
+12-06-2023
+
+for MySQL DATE.
+
+Use:
+
+2023-06-12
+5. What can we DO with dates?
+
+This is where the interesting part starts. 🔥
+
+Once we have a DATE column, SQL allows us to:
+
+A. Get today's date
+What is today's date?
+B. Extract parts
+Get the year
+Get the month
+Get the day
+
+For example:
+
+2023-06-12
+
+We can extract:
+
+Year  → 2023
+Month → 6
+Day   → 12
+C. Compare dates
+
+For example:
+
+Find employees who joined after 2023.
+
+D. Find date differences
+
+For example:
+
+How many days between two dates?
+
+E. Add/subtract dates
+
+For example:
+
+Find the date 30 days after joining.
+
+F. Format dates
+
+Convert:
+
+2023-06-12
+
+into something like:
+
+12-06-2023
+
+or:
+
+12 June 2023
+G. Group data by date
+
+For example:
+
+How many employees joined in each year?
+---------------------------------------------------------------------------------------
+
+🧠 The DATE concept map
+
+Think of it like this:
+
+                 SQL DATE
+                    │
+       ┌────────────┼────────────┐
+       ↓            ↓            ↓
+    Store        Extract       Compare
+       │            │            │
+     DATE       YEAR/MONTH     > < =
+                  /DAY
+       │
+       ├───────────────┐
+       ↓               ↓
+ Calculate          Format
+ difference         dates
+       │
+       ↓
+ Add / Subtract
+ dates
+-------------------------------------------------------------------------------------
+And these are the main DATE topics I want you to know for interviews:
+
+DATE datatype
+DATETIME
+TIMESTAMP
+CURDATE()
+NOW()
+YEAR()
+MONTH()
+DAY()
+Date comparison
+DATEDIFF()
+DATE_ADD()
+DATE_SUB()
+DATE_FORMAT()
+Date filtering with WHERE
+Date grouping with GROUP BY
+----------------------------------------------------------------------------------
+
+this are the tables;
+EMPLOYEES;
++--------+----------+--------+---------+--------------+
+| emp_id | emp_name | salary | dept_id | JOINING_DATE |
++--------+----------+--------+---------+--------------+
+|    101 | ANU      |  45000 |       1 | 2023-06-12   |
+|    102 | RAVI     |  55000 |       1 | 2024-01-10   |
+|    103 | PRIYA    |  40000 |       2 | 2022-08-20   |
+|    104 | KIRAN    |  60000 |       3 | 2025-03-05   |
+|    105 | SNEHA    |  50000 |       3 | 2024-01-06   |
+|    106 | SANJAY   |  45000 |       4 | 2021-11-16   |
++--------+----------+--------+---------+--------------+
+
+DEPARTMENTS;
++---------+-----------+
+| dept_id | dept_name |
++---------+-----------+
+|       1 | IT        |
+|       2 | HR        |
+|       3 | FINANCE   |
+|       4 | MARKETING |
++---------+-----------+
+-------------------------------------------------------------------------------------
+select curdate();
++------------+
+| curdate()  |
++------------+
+| 2026-10-03 |
++------------+
+1 row in set (0.00 sec)
+
+mysql> select curTime();
++-----------+
+| curTime() |
++-----------+
+| 14:58:58  |
++-----------+
+-------------------------------------------------------------------
+
