@@ -246,6 +246,9 @@ DEPARTMENTS;
 |       4 | MARKETING |
 +---------+-----------+
 -------------------------------------------------------------------------------------
+What is CURDATE()?
+
+CURDATE() is a MySQL function that returns the current date.
 select curdate();
 +------------+
 | curdate()  |
@@ -254,6 +257,18 @@ select curdate();
 +------------+
 1 row in set (0.00 sec)
 
+NOW() in MySQL
+
+NOW() returns the current date AND current time.
+
+SELECT NOW();
+mysql> select now();
++---------------------+
+| now()               |
++---------------------+
+| 2026-10-03 15:06:04 |
++---------------------+
+
 mysql> select curTime();
 +-----------+
 | curTime() |
@@ -261,4 +276,489 @@ mysql> select curTime();
 | 14:58:58  |
 +-----------+
 -------------------------------------------------------------------
+1)Find the names and joining dates of employees who joined before 2024-01-01.
 
+select emp_name,joining_date from employees where joining_date <'2024-01-01';
++----------+--------------+
+| emp_name | joining_date |
++----------+--------------+
+| ANU      | 2023-06-12   |
+| PRIYA    | 2022-08-20   |
+| SANJAY   | 2021-11-16   |
++----------+--------------+
+-----------------------------------------------------------------------
+SELECT emp_name, YEAR(joining_date)
+    -> FROM employees;
++----------+--------------------+
+| emp_name | YEAR(joining_date) |
++----------+--------------------+
+| ANU      |               2023 |
+| RAVI     |               2024 |
+| PRIYA    |               2022 |
+| KIRAN    |               2025 |
+| SNEHA    |               2024 |
+| SANJAY   |               2021 |
++----------+--------------------+
+6 rows in set (0.01 sec)
+
+mysql> SELECT emp_name, month(joining_date)
+    -> from employees;
++----------+---------------------+
+| emp_name | month(joining_date) |
++----------+---------------------+
+| ANU      |                   6 |
+| RAVI     |                   1 |
+| PRIYA    |                   8 |
+| KIRAN    |                   3 |
+| SNEHA    |                   1 |
+| SANJAY   |                  11 |
++----------+---------------------+
+6 rows in set (0.01 sec)
+
+mysql> SELECT emp_name, date(joining_date) from employees;
++----------+--------------------+
+| emp_name | date(joining_date) |
++----------+--------------------+
+| ANU      | 2023-06-12         |
+| RAVI     | 2024-01-10         |
+| PRIYA    | 2022-08-20         |
+| KIRAN    | 2025-03-05         |
+| SNEHA    | 2024-01-06         |
+| SANJAY   | 2021-11-16         |
++----------+--------------------+
+6 rows in set (0.01 sec)
+-------------------------------------------------------------------------------
+2)Write a query to find employees who joined in 2023.
+ select emp_name from employees where year(joining_date)='2023';
++----------+
+| emp_name |
++----------+
+| ANU      |
++----------+
+-------------------------------------------------------------
+
+Queries problem
+Q1
+
+Find the employee name and joining date of employees who joined in January.
+ select emp_name,joining_date from employees where month(joining_date)=1;
++----------+--------------+
+| emp_name | joining_date |
++----------+--------------+
+| RAVI     | 2024-01-10   |
+| SNEHA    | 2024-01-06   |
++----------+--------------+
+---------------------------------------------------------------------------
+
+Q2
+
+Find the employee name and joining date of employees who joined in 2024.
+select emp_name,joining_date from employees where year(joining_date)=2024;
++----------+--------------+
+| emp_name | joining_date |
++----------+--------------+
+| RAVI     | 2024-01-10   |
+| SNEHA    | 2024-01-06   |
++----------+--------------+
+-----------------------------------------------------------------------------
+
+Q3
+
+Find the employee name and joining date of employees who joined on the 12th day of any month.
+select emp_name,joining_date from employees where Day(joining_date)=12;
++----------+--------------+
+| emp_name | joining_date |
++----------+--------------+
+| ANU      | 2023-06-12   |
++----------+--------------+
+---------------------------------------------------------------------------------------
+
+Q4
+
+Find the employee name and joining date of employees who joined in March.
+select emp_name,joining_date from employees where month(joining_date)=3;
++----------+--------------+
+| emp_name | joining_date |
++----------+--------------+
+| KIRAN    | 2025-03-05   |
++----------+--------------+
+1 row in set (0.00 sec)
+------------------------------------------------------------------------
+
+
+Q5
+
+Find the employee name and joining date of employees who joined in 2021.
+select emp_name,joining_date from employees where year(joining_date)=2021;
++----------+--------------+
+| emp_name | joining_date |
++----------+--------------+
+| SANJAY   | 2021-11-16   |
++----------+--------------+
+-------------------------------------------------------------------------
+DATE Operations
+
+The first operation we should learn is:
+
+DATEDIFF()
+---------------------------------------------
+
+It is used to calculate the difference between two dates.
+
+Basic idea
+DATEDIFF(date1, date2)
+
+It returns the number of days between the two dates.
+
+For example:
+
+SELECT DATEDIFF('2024-01-10', '2024-01-01');
+
+Result:
+
+9
+
+Because:
+
+Jan 1 → Jan 10 = 9 days
+Important ⚠️
+
+The order matters:
+
+DATEDIFF('2024-01-10', '2024-01-01')
+
+→ 9
+
+But:
+
+DATEDIFF('2024-01-01', '2024-01-10')
+
+→ -9
+
+So remember:
+
+DATEDIFF(later_date, earlier_date)
+              ↓
+        positive days
+Using your employee table
+
+We can calculate how many days have passed between an employee's joining date and today:
+
+SELECT emp_name, joining_date,
+       DATEDIFF(CURDATE(), joining_date) AS days_worked
+FROM employees;
+
+Conceptually:
+
+Today
+  ↓
+2026-10-03
+  -
+Joining date
+  ↓
+2023-06-12
+  =
+Number of days
+
+AS days_worked is just giving the calculated column a readable name.
+
+🧠 Remember
+DATEDIFF()
+     ↓
+Difference between two dates
+     ↓
+Result is in DAYS
+-----------------------------------------------------------------------------------------
+DATE_ADD()
+--------------------------------------------------
+
+DATE_ADD() is used when you want to add a specific amount of time to a date.
+
+Basic syntax
+DATE_ADD(date, INTERVAL value unit)
+
+For example:
+
+SELECT DATE_ADD('2024-01-10', INTERVAL 10 DAY);
+
+Result:
+
+2024-01-20
+
+Because:
+
+2024-01-10
+     + 10 days
+     ↓
+2024-01-20
+You can add different units
+Add days
+DATE_ADD('2024-01-10', INTERVAL 10 DAY)
+Add months
+DATE_ADD('2024-01-10', INTERVAL 2 MONTH)
+
+Result:
+
+2024-03-10
+Add years
+DATE_ADD('2024-01-10', INTERVAL 1 YEAR)
+
+Result:
+
+2025-01-10
+
+So the pattern is:
+
+DATE_ADD
+   ↓
+date
+   ↓
+INTERVAL
+   ↓
+amount
+   ↓
+DAY / MONTH / YEAR
+🔥 Using your employee table
+
+Suppose ANU joined on:
+
+2023-06-12
+
+We can calculate the date 6 months after joining:
+
+SELECT DATE_ADD(joining_date, INTERVAL 6 MONTH)
+FROM employees
+WHERE emp_name = 'ANU';
+
+Result:
+
+2023-12-12
+🧠 Easy memory trick
+DATEDIFF()  → Find difference
+DATE_ADD()  → Add time
+------------------------------------------------------------------------------------
+What date is 1 year after RAVI's joining date?
+select date_add(joining_date,interval 1 year) from employees where emp_name='ravi';
++----------------------------------------+
+| date_add(joining_date,interval 1 year) |
++----------------------------------------+
+| 2025-01-10                             |
++----------------------------------------+
+---------------------------------------------------------------------------
+DATE_SUB() 📅
+
+It does the reverse of DATE_ADD():
+
+DATE_ADD() → moves date forward
+DATE_SUB() → moves date backward
+
+Example:
+
+SELECT DATE_SUB('2024-01-10', INTERVAL 2 MONTH);
+
+Result:
+
+2023-11-10
+-------------------------------------------------------------------
+ Chain DATE_ADD() / DATE_SUB()
+
+Suppose:
+
+2024-01-10
+
+You want to add 1 year + 2 months + 10 days:
+SELECT DATE_ADD(
+         DATE_ADD(
+           DATE_ADD('2024-01-10', INTERVAL 1 YEAR),
+           INTERVAL 2 MONTH
+         ),
+         INTERVAL 10 DAY
+       );
+
+Result:
+
+2025-03-20
+
+Because:
+
+2024-01-10
++ 1 year  → 2025-01-10
++ 2 months → 2025-03-10
++ 10 days → 2025-03-20
+-------------------------------------------------------------------------------------------
+Q1
+
+Find the number of days each employee has worked from their joining date until today. Display employee name, joining date, and number of days.
+ select emp_name,joining_date,datediff(curdate(),joining_date) as total_days from employees;
++----------+--------------+------------+
+| emp_name | joining_date | total_days |
++----------+--------------+------------+
+| ANU      | 2023-06-12   |       1209 |
+| RAVI     | 2024-01-10   |        997 |
+| PRIYA    | 2022-08-20   |       1505 |
+| KIRAN    | 2025-03-05   |        577 |
+| SNEHA    | 2024-01-06   |       1001 |
+| SANJAY   | 2021-11-16   |       1782 |
++----------+--------------+------------+
+------------------------------------------------------------------
+Q2
+
+Find the date that is 6 months after each employee's joining date. Display employee name and the calculated date.
+ select emp_name,date_add(joining_date ,interval 6 month)as new_date from employees;
++----------+------------+
+| emp_name | new_date   |
++----------+------------+
+| ANU      | 2023-12-12 |
+| RAVI     | 2024-07-10 |
+| PRIYA    | 2023-02-20 |
+| KIRAN    | 2025-09-05 |
+| SNEHA    | 2024-07-06 |
+| SANJAY   | 2022-05-16 |
++----------+------------+
+---------------------------------------------------------------------------------
+Q3
+
+Find the date that was 1 year before each employee's joining date. Display employee name and the calculated date.
+select emp_name,date_sub(joining_date,interval 1 year)as new_date from employees;
++----------+------------+
+| emp_name | new_date   |
++----------+------------+
+| ANU      | 2022-06-12 |
+| RAVI     | 2023-01-10 |
+| PRIYA    | 2021-08-20 |
+| KIRAN    | 2024-03-05 |
+| SNEHA    | 2023-01-06 |
+| SANJAY   | 2020-11-16 |
++----------+------------+
+-----------------------------------------------------------------------------------------------
+Q4
+
+Find employees whose joining date was more than 1000 days ago from today. Display employee name and joining date.
+ SELECT emp_name, joining_date
+    -> FROM employees
+    -> WHERE joining_date < DATE_SUB(CURDATE(), INTERVAL 1000 DAY);
++----------+--------------+
+| emp_name | joining_date |
++----------+--------------+
+| ANU      | 2023-06-12   |
+| PRIYA    | 2022-08-20   |
+| SNEHA    | 2024-01-06   |
+| SANJAY   | 2021-11-16   |
++----------+--------------+
+---------------------------------------------------------------------
+Q5
+
+For employee RAVI, find the date that is 1 year and 3 months after his joining date.
+select date_add(date_add(joining_date,interval 1 year),interval 3 month) from employees where emp_name='ravi';
++-------------------------------------------------------------------+
+| date_add(date_add(joining_date,interval 1 year),interval 3 month) |
++-------------------------------------------------------------------+
+| 2025-04-10                                                        |
++-------------------------------------------------------------------+
+---------------------------------------------------------------------------------------
+DATE_FORMAT()
+
+DATE_FORMAT() is used to display a date in the format you want.
+
+It doesn't change the actual date stored in the database. It only changes how the date appears in the query result.
+
+Basic syntax
+DATE_FORMAT(date, format)
+
+For example:
+
+SELECT DATE_FORMAT('2024-01-10', '%d-%m-%Y');
+
+Result:
+
+10-01-2024
+🔑 Important format symbols
+
+These are the ones you should remember first:
+
+Symbol	Meaning	Example
+%Y	4-digit year	2024
+%y	2-digit year	24
+%m	Month number	01
+%d	Day	10
+%M	Full month name	January
+%b	Short month name	Jan
+%W	Full weekday name	Wednesday
+%a	Short weekday name	Wed
+Example
+
+Your date:
+
+2024-01-10
+
+Can be displayed as:
+
+DATE_FORMAT(joining_date, '%d-%m-%Y')
+
+→
+
+10-01-2024
+
+Or:
+
+DATE_FORMAT(joining_date, '%d %M %Y')
+
+→
+
+10 January 2024
+
+Or:
+
+DATE_FORMAT(joining_date, '%M %d, %Y')
+
+→
+
+January 10, 2024
+🔥 Using YOUR table
+SELECT emp_name,
+       DATE_FORMAT(joining_date, '%d-%m-%Y') AS formatted_date
+FROM employees;
+
+Your database still stores:
+
+2024-01-10
+
+We're just displaying it as:
+
+10-01-2024
+--------------------------------------------------------------------------
+Q1
+
+Display each employee's name and joining date in this format:
+
+12-06-2023
+select emp_name,date_format(joining_date,'%d-%m-%Y')from employees;
++----------+--------------------------------------+
+| emp_name | date_format(joining_date,'%d-%m-%Y') |
++----------+--------------------------------------+
+| ANU      | 12-06-2023                           |
+| RAVI     | 10-01-2024                           |
+| PRIYA    | 20-08-2022                           |
+| KIRAN    | 05-03-2025                           |
+| SNEHA    | 06-01-2024                           |
+| SANJAY   | 16-11-2021                           |
++----------+--------------------------------------+
+----------------------------------------------------
+
+Q2
+
+Display each employee's name and joining date in this format:
+
+June 12, 2023
+ select emp_name,date_format(joining_date,'%M %d %Y') as joining_date from employees;
++----------+------------------+
+| emp_name | joining_date     |
++----------+------------------+
+| ANU      | June 12 2023     |
+| RAVI     | January 10 2024  |
+| PRIYA    | August 20 2022   |
+| KIRAN    | March 05 2025    |
+| SNEHA    | January 06 2024  |
+| SANJAY   | November 16 2021 |
++----------+------------------+
+6 rows in set (0.00 sec)
