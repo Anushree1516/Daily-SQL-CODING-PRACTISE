@@ -1,0 +1,38 @@
+from employees;
++--------+----------+--------+---------+--------------+
+| emp_id | emp_name | salary | dept_id | JOINING_DATE |
++--------+----------+--------+---------+--------------+
+|    101 | ANU      |  45000 |       1 | 2023-06-12   |
+|    102 | RAVI     |  55000 |       1 | 2024-01-10   |
+|    103 | PRIYA    |  40000 |       2 | 2022-08-20   |
+|    104 | KIRAN    |  60000 |       3 | 2025-03-05   |
+|    105 | SNEHA    |  50000 |       3 | 2024-01-06   |
+|    106 | SANJAY   |  45000 |       4 | 2021-11-16   |
++--------+----------+--------+---------+--------------+
+
+ from departments;
++---------+-----------+
+| dept_id | dept_name |
++---------+-----------+
+|       1 | IT        |
+|       2 | HR        |
+|       3 | FINANCE   |
+|       4 | MARKETING |
++---------+-----------+
+==========================================================================================================================
+Question 1
+Find the department-wise average salary, display only departments whose average salary is greater than 50,000, and sort the result from highest average salary to lowes
+
+SELECT d.dept_name, AVG(e.salary)
+    -> FROM employees e
+    -> JOIN departments d
+    -> ON e.dept_id = d.dept_id
+    -> GROUP BY d.dept_name
+    -> HAVING AVG(salary) > 50000
+    -> ORDER BY AVG(salary) Desc;
++-----------+---------------+
+| dept_name | AVG(e.salary) |
++-----------+---------------+
+| FINANCE   |    55000.0000 |
++-----------+---------------+
+============================================================================
